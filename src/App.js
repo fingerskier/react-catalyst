@@ -1,6 +1,6 @@
-import State from './State'
-import States from './States'
-
+import ControlPanel from './v1/ControlPanel'
+import State from './v1/State'
+import States from './v1/States'
 
 import logo from './logo.svg'
 import './App.css'
@@ -15,26 +15,39 @@ function App() {
         name="IDLE"
         start={() => console.log('Entering IDLE')}
         end={() => console.log('Exiting IDLE')}
-        transitions={{ startLoading: 'LOADING' }}
-      />
+        transitions={['LOADING']}
+      >
+        IDLE
+      </State>
+      
       <State
         name="LOADING"
         start={() => console.log('Entering LOADING')}
         end={() => console.log('Exiting LOADING')}
-        transitions={{ success: 'SUCCESS', error: 'ERROR' }}
-      />
+        transitions={['LOADING', 'ERROR', 'SUCCESS' ]}
+      >
+        LOADING
+      </State>
+      
       <State
         name="SUCCESS"
         start={() => console.log('Entering SUCCESS')}
         end={() => console.log('Exiting SUCCESS')}
-        transitions={{ reset: 'IDLE' }}
-      />
+        transitions={['IDLE']}
+      >
+        SUCCESS
+      </State>
+      
       <State
         name="ERROR"
         start={() => console.log('Entering ERROR')}
         end={() => console.log('Exiting ERROR')}
-        transitions={{ retry: 'LOADING', reset: 'IDLE' }}
-      />
+        transitions={['LOADING', 'IDLE']}
+      >
+        ERROR
+      </State>
+      
+      <ControlPanel />
     </States>
   </>
 }

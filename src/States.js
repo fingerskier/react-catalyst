@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect, useRef } from 'react';
-import State from './State';
+
 
 const STATES = {
   IDLE: 'IDLE',
@@ -30,7 +30,7 @@ const reducer = (state, action) => {
   }
 };
 
-const States = ({ children }) => {
+const States = ({ children, update }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const currRef = useRef()
   const prevRef = useRef()
@@ -63,9 +63,10 @@ const States = ({ children }) => {
       })}
 
       {currRef.current && React.cloneElement(currRef.current, {
-        start: currRef.current.props.start,
-        update: currRef.current.props.update,
         runUpdate: true,
+        start: currRef.current.props.start,
+        transition: transition,
+        update: currRef.current.props.update,
       })}
     </div>
   );
