@@ -8,14 +8,6 @@ import stateData from './FSM/stateConfig'
 
 export default function FSM() {
   return <>
-    <div>
-      State names, transitions, and transition start/update/end handlers are defined in code.
-      There are also handlers for FSM setup/teardown
-      Buttons are disabled if that state transition isn't valid.
-      These machines default to the IDLE state.
-      The IDLE state element is a component whereas the others are hard-coded- the benefit of the import (instead of direct children) is that they are injected with the helper functions.
-    </div>
-
     <h2>FSM tag-based</h2>
     <p>These states are setup directly in JSX</p>
     
