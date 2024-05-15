@@ -3,17 +3,23 @@ import React, {useEffect, useState} from 'react'
 
 export default function States({
   children,
+  name='FSM',
   setup,
   teardown,
+  verbose=false,
 }) {
   const [state, setState] = useState()
 
 
   const available = stateName => {
     // return true if the current state's transitions array contains 'stateName'
-    return React.Children.toArray(children)
+    const validTransition = React.Children.toArray(children)
     .find(child=>child.props.name === state)
     .props.transitions?.includes(stateName)
+
+    const stateless = !state
+
+    return stateless || validTransition
   }
 
 
@@ -25,23 +31,63 @@ export default function States({
 
 
   useEffect(() => {
-    if (setup) setup()
+    if (verbose) console.log(`FSM: ${name} starting`)
+    
+    try {
+      if (setup) {
+        if (setup.toString().includes("async")) {
+          (async () => {
+            await setup()
+          })()
+        } else {
+          setup()
+        }
+      }
+    } catch (error) {
+      console.error(`Error in ${name} setup:`, error)
+    }
     
     return () => {
-      if (teardown) teardown()
+      if (verbose) console.log(`FSM: ${name} ending`)
+      
+      try {
+        if (teardown) {
+          if (teardown.toString().includes("async")) {
+            (async () => {
+              await teardown()
+            })()
+          } else {
+            teardown()
+          }
+        }
+      } catch (error) {
+        console.error(`Error in ${name} teardown:`, error)
+      }
     }
   }, [])
 
 
-  // loop over the children and return the child that matches the current state
+  // loop over children, return child matching the current state
   const contents = React.Children.toArray(children)
   .map(child=>{
-    // if the child is not a <State /> tag then just return it
     if (child.type.name === 'State') {
-      if (child.props.name === state) {
-        // inject the 'transition' prop into the child
-        const result = React.cloneElement(child, {
+      const element = child.props.element? child.props.element : child
+      
+      if (!state && child.props.default) {
+        const result = React.cloneElement(element, {
           available: available,
+          machine: name,
+          state: state,
+          transition: transition,
+        })
+        
+        setState(child.props.name)
+        
+        return result
+      } else if (child.props.name === state) {
+        const result = React.cloneElement(element, {
+          available: available,
+          machine: name,
           state: state,
           transition: transition,
         })
@@ -49,8 +95,10 @@ export default function States({
         return result
       }
     } else {
+      // return any child that is not a <State />
       const result = React.cloneElement(child, {
         available: available,
+        machine: name,
         state: state,
         transition: transition,
       })
