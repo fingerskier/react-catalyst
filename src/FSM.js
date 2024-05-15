@@ -3,7 +3,7 @@ import Idle from './FSM/Idle'
 import States from './FSM/States'
 import State from './FSM/State'
 import ControlPanel from './FSM/ControlPanel'
-import stateData from './FSM/stateConfig'
+import stateData from './stateConfig'
 
 
 export default function FSM() {
