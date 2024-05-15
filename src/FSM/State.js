@@ -4,16 +4,13 @@ import {useEffect} from 'react'
 export default function State({
   children,
   end,
-  name,
   start,
-  transitions,
-  update,
 }) {
   useEffect(() => {
-    start()
+    if (start) start()
     
     return () => {
-      end()
+      if (end) end()
     }
   }, [])
 

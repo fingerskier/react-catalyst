@@ -1,7 +1,11 @@
 import React, {useEffect, useState} from 'react'
 
 
-export default function States({children}) {
+export default function States({
+  children,
+  setup,
+  teardown,
+}) {
   const [state, setState] = useState()
 
 
@@ -21,8 +25,10 @@ export default function States({children}) {
 
 
   useEffect(() => {
+    if (setup) setup()
     
     return () => {
+      if (teardown) teardown()
     }
   }, [])
 
@@ -35,6 +41,7 @@ export default function States({children}) {
       if (child.props.name === state) {
         // inject the 'transition' prop into the child
         const result = React.cloneElement(child, {
+          available: available,
           state: state,
           transition: transition,
         })
@@ -43,6 +50,7 @@ export default function States({children}) {
       }
     } else {
       const result = React.cloneElement(child, {
+        available: available,
         state: state,
         transition: transition,
       })
