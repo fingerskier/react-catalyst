@@ -1,29 +1,44 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useReducer, useState} from 'react'
+import HashyContext, {action, reducer} from './hashyContext'
 
 
 export default function Hashy({
   children,
   verbose=false,
 }) {
-  const [state, setState] = useState()
-  
+  const [state, setState] = useReducer(reducer, {
+    setParm: (key,val)=>window.location+=`&${key}=${val}`
+  })
+  // TODO: setParm could be a little smarter: if the param already exists then update the state and location.search; and if there is no location.search then add with '?' instead of '&'
+
 
   useEffect(() => {
     const hashChangeHandler = event=>{
       const [hash,search] = window.location.hash.substring(1).split('?')
+
+      if (verbose) console.log('Hashy parsing', hash, search)
       
-      const newState = hash
+      let context = {}
       
-      let context = search.split('&').reduce((acc,cur)=>{
-        const [key,value] = cur.split('=')
-        acc[key] = value
-        return acc
+      if (search) search.split('&').forEach(el=>{
+        const [key,value] = el.split('=')
+        context[key] = value
       },{})
       
-      setState(newState)
+      context.state = hash
+      context.search = search
+      
+      setState({
+        type: action.SET,
+        payload: context,
+      })
+      
+      if (verbose) console.log('Hashy context', context)
     }
     
     window.addEventListener('hashchange', hashChangeHandler)
+    
+    hashChangeHandler()
     
     return () => {
       window.removeEventListener('hashchange', hashChangeHandler)
@@ -31,7 +46,11 @@ export default function Hashy({
   }, [])
 
 
-  return (
-    <div>States</div>
-  )
+  return <>
+    {verbose? 'verbose mode ON': null}
+
+    <HashyContext.Provider value={state}>
+      {children}
+    </HashyContext.Provider>
+  </>
 }
