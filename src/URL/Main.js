@@ -9,7 +9,13 @@ const initialState = {
 export default function HashyMain() {
   return <div>
     <Hashy
-      defaultState={initialState}
+      defaultContext={initialState}
+      defaultState='one'
+      transition={{
+        one: ['two'],
+        two: ['three'],
+        three: ['one']
+      }}
       verbose={true}
     >
       <Test />
