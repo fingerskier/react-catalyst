@@ -12,10 +12,12 @@ export const action = {
 export function reducer(state, data) {
   switch (data.type) {
     case action.SET: {
-      return {
+      const newContext = {
         ...state,
         ...data.payload,
       }
+      
+      return newContext
     }
     
     case action.DELETE: {
