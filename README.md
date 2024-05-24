@@ -48,7 +48,7 @@ These helpers are injected into all children of `States`:
 
 Hashy is a simple URL state manager.
 It uses the URL hash and query parameters, via a React context, to manage state.
-The hash portion, between the `#` and the `?` (or end) of the URL is the current state name.
+The hash portion, between the `#` and the `?` (or end, if none) of the URL is the current state name.
 The query parameters, after the '?', get parsed into an object which is available via useHashyContext.
 There is a `setParm` function, in the context, which allows adding a query parameter with a value.
 There is also a `setVar` function which allows adding a state variable- this is for complex values or values that shouldn't trigger URL change.
