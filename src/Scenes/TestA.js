@@ -1,7 +1,11 @@
 import React from 'react'
 
-export default function TestA() {
-  return (
-    <div>TestA</div>
-  )
+export default function TestA({
+  one,
+}) {
+  return <div>
+    TestA
+    <br />
+    one = {one}
+  </div>
 }

@@ -34,7 +34,9 @@ export default function SceneTest() {
           <h3>Scene C</h3>
         </Scene>
         
-        <Scene element={<TestD/>} hash='D' verbose={verboseMode} />
+        <Scene hash='D' verbose={verboseMode}>
+          <TestD />
+        </Scene>
       </Scene>
     </Scene>
   </div>
