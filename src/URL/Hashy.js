@@ -16,7 +16,7 @@ export default function Hashy({
 }) {
   const [state, setState] = useReducer(reducer, {
     available: nextState=>transition?.[currentState.current]?.includes(nextState),
-
+    
     href: (state,vars)=>{
       let result = ['#', state]
       
@@ -30,7 +30,7 @@ export default function Hashy({
       
       return result.join('')
     },
-
+    
     setParm: (key,val)=>{
       const result = `${key}=${val}`
       
