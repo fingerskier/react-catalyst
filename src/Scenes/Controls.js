@@ -9,6 +9,7 @@ export default function Controls({link}) {
   return <div>
     <div>Current hash: {hash}</div>
 
+    <p>The control panel is part of the root Scene</p>
     <ul>
       <li>
         <a href={link('')}>Home</a>
@@ -36,6 +37,10 @@ export default function Controls({link}) {
 
       <li>
         <a href={link('root2/D')}>root2/D</a>
+      </li>
+
+      <li>
+        <a href={link('G')}>G</a>
       </li>
     </ul>
   </div>

@@ -5,6 +5,8 @@ import Scene from './Scene'
 import TestA from './TestA'
 import TestB from './TestB'
 import TestD from './TestD'
+import TestG from './TestG'
+
 
 const verboseMode = false
 
@@ -13,6 +15,7 @@ export default function SceneTest() {
   return <div>
     <h2>Scenes Example</h2>
     
+    <p>This bit is outside of any Scene</p>
     
     <Scene>
       <Controls />
@@ -38,6 +41,8 @@ export default function SceneTest() {
           <TestD />
         </Scene>
       </Scene>
+
+      <Scene hash='G' element={<TestG />} />
     </Scene>
   </div>
 }

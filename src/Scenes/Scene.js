@@ -1,5 +1,5 @@
-import React from 'react';
-import useHash from './useURLHash';
+import React from 'react'
+import useHash from './useURLHash'
 
 
 export default function Scene({
@@ -85,8 +85,9 @@ export default function Scene({
         return renderChild(child);
       }
     }
-    return null;
-  });
+    
+    return null
+  })
 
 
   return isLinked ? <>{nestedChildren}</> : null
