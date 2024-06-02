@@ -3,6 +3,7 @@ import FSM from './FSM'
 import HashyMain from './URL/Main'
 import SceneTest from './Scenes'
 import SceneManagerTest from './SceneManager'
+import Context from './Context'
 
 import './App.css'
 
@@ -12,6 +13,7 @@ function App() {
   const [showHashy, setShowHashy] = useState(false)
   const [showScene, setShowScene] = useState(false)
   const [showSM, setShowSM] = useState(false)
+  const [showContext, setShowContext] = useState(false)
 
 
   return <>
@@ -43,7 +45,15 @@ function App() {
     </button>
     
     {showSM ? <SceneManagerTest /> : null}
+    
+    
+    <button onClick={()=>setShowContext(!showContext)}>
+      {showContext ? 'Hide' : 'Show'} Context
+    </button>
+    
+    {showContext ? <Context /> : null}
   </>
 }
 
-export default App;
+
+export default App

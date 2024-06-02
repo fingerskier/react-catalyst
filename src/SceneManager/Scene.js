@@ -1,3 +1,9 @@
+/**
+ * This react component only displays its children when the hash matches its name + its parent's name: #parent/child
+ * This way you can lexically define states without messing with routers and singleton state handlers.
+ * It also provides helper function to update the hash and query string.
+ * It also parses and injects the quest-string variables into each child.
+ */
 import React, {useEffect, useState} from 'react'
 
 
@@ -129,7 +135,13 @@ export default function Scene({
   const renderedChildren = React.Children.map(children, child=>{
     if (React.isValidElement(child)) {
       if (verbose) console.log('SCENE RENDER', parentName, name, query)
-      return React.cloneElement(child, {
+
+      if (child.type === React.Fragment) return React.cloneElement(child.props.children, {
+        link: href,
+        parentName: fullName,
+        ...query,
+      })
+      else return React.cloneElement(child, {
         link: href,
         parentName: fullName,
         ...query,
