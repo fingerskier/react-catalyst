@@ -44,7 +44,7 @@ export const HREFProvider = ({ children }) => {
     setQuery(parseQuery(newQueryString))
   }
   
-
+  
   useEffect(() => {
     const handleHashChange = () => {
       setState(currentHash)
@@ -61,6 +61,16 @@ export const HREFProvider = ({ children }) => {
   }, [])
   
   
+  useEffect(() => {
+    console.log(`<HREF> new state: ${state}`)
+  }, [state])
+  
+  
+  useEffect(() => {
+    console.log(`<HREF> new query: ${JSON.stringify(query)}`)
+  }, [query])
+  
+  
   const context = {
     push,
     query,
@@ -75,16 +85,34 @@ export const HREFProvider = ({ children }) => {
 }
 
 
-export const Scene = ({ name, children }) => {
-  return React.Children.map(children, child => {
-    if (
-      React.isValidElement(child)
-      && (child.type === Scene)
-      && currentHash.startsWith(name)
-    ) {
-      return React.cloneElement(children, { parent: name })
-    }
+export const Scene = ({ parent, name, children, element }) => {
+  const {state} = useHREF()
+  
+  const fullName = parent? `${parent}/${name}`: name
+  
+  const shouldRender = state.startsWith(fullName)
+  
+  console.log(`<Scene> /${parent}/${name} ~ ${fullName} shouldRender: ${shouldRender}`)
+
+
+  const render = (stuff,parm)=>React.Children.map(stuff, child => {
+    if ( !React.isValidElement(child)) return child
     
-    return child
+    if (child.type === Scene) parm[name] = name
+    
+    return React.cloneElement(child, { 
+      ...parm,
+      parent: fullName,
+    })
   })
+  
+  const result = []
+
+  if (shouldRender) {
+    if (element) result.push(render(element, {name: name}))
+    
+    if (children) result.push(render(children))
+  }
+  
+  return result
 }

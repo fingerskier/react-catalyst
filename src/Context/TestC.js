@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default function TestC() {
-  return (
-    <div>TestC</div>
-  )
+  return <div>
+    <h1> TestC </h1>
+  </div>
 }

@@ -9,12 +9,15 @@ import { HREFProvider, Scene } from './HREFContext'
 
 export default function Context() {
   return <>
-    <div>Context</div>
+    <div>HREF Context Handler</div>
+
+    <p>
+      The intent here is to handle state via URL hash and context variables via URL query-string.
+      This gives us a canonical way to handle state and context that is linkable.
+    </p>
     
     <HREFProvider>
-      <Scene name="A">
-        <TestA />
-      </Scene>
+      <Scene name="A" element={<TestA/>} />
       
       <Scene name="B">
         <TestB />
