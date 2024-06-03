@@ -3,7 +3,7 @@ import { useHREF } from './HREFContext'
 
 
 export default function Controls() {
-  const {push, query, state} = useHREF()
+  const {link, push, query, state} = useHREF()
   
   
   return <>
@@ -17,7 +17,7 @@ export default function Controls() {
       </li>
 
       <li>
-        <a href="#C">Test C</a>
+        <a href={link('C', {c:0})}>Test C</a>
       </li>
     </ul>
     

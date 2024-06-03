@@ -4,6 +4,11 @@ const currentHash = ()=>window.location.hash.substring(1)
 const HREFContext = createContext();
 const parseQuery = queryString=>{
   const params = {}
+
+  queryString = queryString || window.location.search
+
+  console.log('PARSING QUERY STRING', queryString)
+
   const queryParts = (queryString[0] === '?' ? queryString.slice(1) : queryString)
     .split('&');
   
@@ -17,8 +22,27 @@ const parseQuery = queryString=>{
   });
   
   return params
-
 }
+
+const setHashString = name=> window.location.hash = name
+
+
+const setQueryString = (params, override = false)=>{
+  const searchParams = new URLSearchParams(override ? '' : window.location.search)
+  
+  Object.entries(params).forEach(([key, value]) => {
+      if (value === null) {
+          searchParams.delete(key)
+      } else {
+          searchParams.set(key, value)
+      }
+  })
+  
+  const newQueryString = searchParams.toString()
+  window.history.replaceState({}, '', `${window.location.pathname}?${newQueryString}${window.location.hash}`)
+}
+
+const canonicalHREF = (hash,quuery)=>`?${new URLSearchParams(quuery).toString()}#${hash}`
 
 
 export const useHREF = () => useContext(HREFContext)
@@ -27,21 +51,22 @@ export const useHREF = () => useContext(HREFContext)
 export const HREFProvider = ({ children }) => {
   const [query, setQuery] = useState({})
   const [state, setState] = useState(currentHash)
+
+
+  const goto = (name, params = {}, override = false) => {
+    if (name.startsWith('...')) name = state + '/' + name.slice(3)
+    setHashString(name)
+    setQueryString(params, override)
+  }
+
+  const link = (name, params = {}) => {
+    if (name.startsWith('...')) name = state + '/' + name.slice(3)
+    return canonicalHREF(name,params)
+  }
   
   const push = (params, override = false)=>{
-    const searchParams = new URLSearchParams(override ? '' : window.location.search)
-    
-    Object.entries(params).forEach(([key, value]) => {
-        if (value === null) {
-            searchParams.delete(key)
-        } else {
-            searchParams.set(key, value)
-        }
-    })
-    
-    const newQueryString = searchParams.toString()
-    window.history.replaceState({}, '', `${window.location.pathname}?${newQueryString}${window.location.hash}`)
-    setQuery(parseQuery(newQueryString))
+    setQueryString(params,override)
+    setQuery(parseQuery())
   }
   
   
@@ -72,6 +97,8 @@ export const HREFProvider = ({ children }) => {
   
   
   const context = {
+    ...query,
+    link,
     push,
     query,
     state,
@@ -92,8 +119,6 @@ export const Scene = ({ parent, name, children, element }) => {
   
   const shouldRender = state.startsWith(fullName)
   
-  console.log(`<Scene> /${parent}/${name} ~ ${fullName} shouldRender: ${shouldRender}`)
-
 
   const render = (stuff,parm)=>React.Children.map(stuff, child => {
     if ( !React.isValidElement(child)) return child
