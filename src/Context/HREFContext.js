@@ -42,7 +42,7 @@ const setQueryString = (params, override = false)=>{
   window.history.replaceState({}, '', `${window.location.pathname}?${newQueryString}${window.location.hash}`)
 }
 
-const canonicalHREF = (hash,quuery)=>`?${new URLSearchParams(quuery).toString()}#${hash}`
+const canonicalHREF = (hash,query)=>`${query? '?' + new URLSearchParams(query).toString(): ''}#${hash}`
 
 
 export const useHREF = () => useContext(HREFContext)
@@ -53,17 +53,22 @@ export const HREFProvider = ({ children }) => {
   const [state, setState] = useState(currentHash)
 
 
-  const goto = (name, params = {}, override = false) => {
-    if (name.startsWith('...')) name = state + '/' + name.slice(3)
-    setHashString(name)
-    setQueryString(params, override)
+  const goto = (name, params, override = false) => {
+    const hrefName = name?.join? name.join('/'): name
+    
+    setHashString(hrefName)
+    
+    if (params) setQueryString(params, override)
   }
 
-  const link = (name, params = {}) => {
-    if (name.startsWith('...')) name = state + '/' + name.slice(3)
-    return canonicalHREF(name,params)
+
+  const link = (name, params) => {
+    const hrefName = name?.join? name.join('/'): name
+    
+    return canonicalHREF(hrefName,params)
   }
-  
+
+
   const push = (params, override = false)=>{
     setQueryString(params,override)
     setQuery(parseQuery())
@@ -98,6 +103,7 @@ export const HREFProvider = ({ children }) => {
   
   const context = {
     ...query,
+    goto,
     link,
     push,
     query,
@@ -112,18 +118,23 @@ export const HREFProvider = ({ children }) => {
 }
 
 
-export const Scene = ({ parent, name, children, element }) => {
+export const Scene = ({ parent, name, children, Element }) => {
   const {state} = useHREF()
   
   const fullName = parent? `${parent}/${name}`: name
   
   const shouldRender = state.startsWith(fullName)
-  
 
-  const render = (stuff,parm)=>React.Children.map(stuff, child => {
+
+  const render = (stuff,parm={})=>React.Children.map(stuff, child => {
     if ( !React.isValidElement(child)) return child
     
-    if (child.type === Scene) parm[name] = name
+    // if (child.type === Scene) {
+    //   parm.children = child.props.children
+    //   // parm.name = name
+    // }
+    
+    // if (!child.props.name) parm.name = name
     
     return React.cloneElement(child, { 
       ...parm,
@@ -131,13 +142,22 @@ export const Scene = ({ parent, name, children, element }) => {
     })
   })
   
-  const result = []
-
-  if (shouldRender) {
-    if (element) result.push(render(element, {name: name}))
-    
-    if (children) result.push(render(children))
-  }
+  // let result = null
   
-  return result
+  // if (shouldRender) {
+  //   result = []
+  
+  //   if (Element) result.push(render(Element, {
+  //     children: children,
+  //     name: name,
+  //   }))
+  //   else if (children) result.push(render(children))
+  // }
+  
+  
+  return <>
+    {shouldRender?
+      render(children)
+    : null}
+  </>
 }

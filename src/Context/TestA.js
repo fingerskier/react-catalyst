@@ -30,7 +30,7 @@ export default function TestA({name}) {
     
     <a href="#A/D">show my D</a>
     
-    <Scene name="D" parent={name} element={<TestAD/>}>
+    <Scene name="D" parent={name} Element={<TestAD/>}>
       <div>
         This bare markup within the 'D' Scene.
       </div>

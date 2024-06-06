@@ -1,5 +1,6 @@
 import React from 'react'
 import Controls from './Controls'
+import Generic from './Generic'
 import TestA from './TestA'
 import TestB from './TestB'
 import TestC from './TestC'
@@ -17,10 +18,28 @@ export default function Context() {
     </p>
     
     <HREFProvider>
-      <Scene name="A" element={<TestA/>} />
+      <Scene name="A">
+        <TestA style={{border: 'thin solid red'}}>
+          <div>TestA child</div>
+          
+          <Scene name="B">
+            <Generic name='A/B' />
+          </Scene>
+        </TestA>
+      </Scene>
       
-      <Scene name="B">
-        <TestB />
+      <Scene name="B" style={{border: 'thin solid red'}}>
+        <div>Test B head</div>
+
+        <Scene name="F">
+          <Generic name='F' />
+        </Scene>
+
+        <Scene name="G">
+          <Generic name='G' />
+        </Scene>
+
+        <div>Test B foot</div>
       </Scene>
       
       <Scene name="C">
